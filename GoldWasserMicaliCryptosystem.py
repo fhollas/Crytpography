@@ -8,7 +8,8 @@ from math import gcd
 
 
 def judge_qr(y,p,q):
-    if y**((q-1)/2) % q == 1 and y**((p-1)/2) % p == 1:
+    if pow(y, int((q-1)/2), q) == 1 and pow(y, int((p-1)/2), p):
+    #if y**((q-1)/2) % q == 1 and y**((p-1)/2) % p == 1:
         #print(y,"quadratic residue =&gt; 0")
         return 1
     else:
@@ -18,7 +19,8 @@ def judge_qr(y,p,q):
 def choose_qnr(N,p,q):
     start_time=time.time()
     for y in range(N):
-        if y**((q-1)/2) % q == (q-1) and y**((p-1)/2) % p == (p-1):
+        if pow(y, int((q-1/2)), q) == (q-1) and pow(y, int((p-1)/2), p) == (p-1):
+        #if y**((q-1)/2) % q == (q-1) and y**((p-1)/2) % p == (p-1):
             #print "non-quadratic residue which is jacobi simbol +1",
             print(y)
     print("\nTime to generate Jacobi Symbols:", time.time()-start_time, "seconds")
@@ -28,13 +30,15 @@ def encryption(bin_str,N,p,q,z,ciphertxt):
     #print z
     start_time=time.time()
     for m in bin_str[2:]:
-        #print m,
+        print(m)
         while 1:
             x = random.randint(1,N)
             if gcd(x,N) :
+                #y = pow(x, 2, N)
                 y = (x**2) % N
                 #print x, "=&gt;", x**2, "=&gt;", y, " ",
             if judge_qr(y,p,q):
+                #y = (pow(int(z), int(m)) * pow(x, 2)) % N
                 y = ((int(z)**int(m))*(x**2))%N
                 ciphertxt.append(y)
                 break
@@ -68,10 +72,13 @@ def decryption(ciphertxt,p,q):
     return decrypttxt
 
 def add(enc1, enc2, N):
+    print("\n\n==Addition")
+    start_time=time.time()
     ab = [enc1[i] * enc2[i] for i in range(len(enc1))]
     print("\n\n", ab)
     sum = [ab[i] % N for  i in range(len(ab))]
-    print("\n\n\t Multiplied ciphertext:", sum)
+    print("\nAddition time:", time.time() - start_time, "seconds")
+    print("\n\n\t Added ciphertext:", sum)
     return sum
 
 def bin2str(bin_str):
@@ -86,9 +93,9 @@ def bin2str(bin_str):
     q = 113
     ciphertxt = []
     '''
-    N = 667
-    p = 23
-    q = 29
+    p = 209490258419118348130222483494418126789
+    q = 177205842835470845473200187961499093143
+    N = p * q
     ciphertxt = []
     
 #z = 134
@@ -98,9 +105,9 @@ def bin2str(bin_str):
     print("\tChoose z QNR(Jacobi Symbol +1)")
     print("\t-Candidates of z : ")
 
-    choose_qnr(N,p,q)
-
-    z = input("\tChoose z(QNR, Jacobi Symbol +1) :")
+    #choose_qnr(N,p,q)
+    z = 583
+    #z = input("\tChoose z(QNR, Jacobi Symbol +1) :")
 
     print("\t Public key  : ",N,z)
     print("\t Private key  : ",p,q)
